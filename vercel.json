@@ -43,11 +43,6 @@
     "DATABASE_URL": "postgresql://neondb_owner:npg_7CcKbPRm2GDw@ep-odd-thunder-ade4ip4a-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
     "PYTHONPATH": "/var/task/src",
     "TZ": "UTC"
-  },
-  "functions": {
-    "src/wsgi.py": {
-      "runtime": "python3.9"
-    }
   }
 }
 
