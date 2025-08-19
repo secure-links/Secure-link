@@ -8,13 +8,11 @@ from flask_cors import CORS
 from src.models.user import db, User
 from src.models.link import Link
 from src.models.tracking_event import TrackingEvent
-from src.models.campaign import Campaign
 from src.routes.user import user_bp
 from src.routes.auth import auth_bp
 from src.routes.links import links_bp
 from src.routes.track import track_bp
 from src.routes.events import events_bp
-from src.routes.campaigns import campaigns_bp
 from src.routes.analytics import analytics_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
@@ -45,8 +43,6 @@ app.register_blueprint(links_bp, url_prefix='/api')
 app.register_blueprint(track_bp)
 app.register_blueprint(events_bp)
 app.register_blueprint(analytics_bp, url_prefix="/api")
-
-
 
 # Database configuration - use PostgreSQL in production, SQLite for development
 database_url = os.environ.get('DATABASE_URL')
@@ -93,4 +89,7 @@ def serve(path):
             return send_from_directory(static_folder_path, 'index.html')
         else:
             return "index.html not found", 404
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
 

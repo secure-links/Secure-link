@@ -13,7 +13,7 @@ def sanitize_input(text):
         return ''
     return text.strip()
 
-@auth_bp.route('/auth', methods=['GET', 'POST', 'DELETE'])
+@auth_bp.route('/auth', methods=['GET', 'POST'])
 def auth():
     if request.method == 'GET':
         # Check if user is logged in
@@ -32,12 +32,12 @@ def auth():
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
         
-        # Handle direct login (new frontend format)
-        username = sanitize_input(data.get('username', ''))
-        password = data.get('password', '')
-        action = data.get('action', 'login')  # Default to login for new frontend
+        action = data.get('action', '')
         
-        if action == 'login' or (username and password):
+        if action == 'login':
+            username = sanitize_input(data.get('username', ''))
+            password = data.get('password', '')
+            
             if not username or not password:
                 return jsonify({'success': False, 'error': 'Username and password are required'}), 400
             
@@ -57,7 +57,9 @@ def auth():
                 return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
         
         elif action == 'register':
+            username = sanitize_input(data.get('username', ''))
             email = sanitize_input(data.get('email', ''))
+            password = data.get('password', '')
             
             if not username or not email or not password:
                 return jsonify({'success': False, 'error': 'All fields are required'}), 400
@@ -92,14 +94,13 @@ def auth():
                 db.session.rollback()
                 return jsonify({'success': False, 'error': 'Failed to create user'}), 500
         
+        elif action == 'logout':
+            session.pop('user_id', None)
+            return jsonify({
+                'success': True,
+                'message': 'Logout successful'
+            })
+        
         else:
             return jsonify({'success': False, 'error': 'Invalid action'}), 400
-    
-    elif request.method == 'DELETE':
-        # Handle logout
-        session.pop('user_id', None)
-        return jsonify({
-            'success': True,
-            'message': 'Logout successful'
-        })
 
