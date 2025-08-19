@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/wsgi.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "src/static/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/src/static/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/src/static/assets/$1"
+    },
+    {
+      "src": "/t/(.*)",
+      "dest": "/src/wsgi.py"
+    },
+    {
+      "src": "/p/(.*)",
+      "dest": "/src/wsgi.py"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/wsgi.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/src/wsgi.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production",
+    "FLASK_DEBUG": "False",
+    "SECRET_KEY": "ej5B3Amppi4gjpbC65te6rJuvJzgVCWW_xfB-ZLR1TE",
+    "DATABASE_URL": "postgresql://neondb_owner:npg_7CcKbPRm2GDw@ep-odd-thunder-ade4ip4a-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
+    "PYTHONPATH": "/var/task/src",
+    "TZ": "UTC"
+  },
+  "functions": {
+    "src/wsgi.py": {
+      "runtime": "python3.9"
+    }
+  }
+}
+
