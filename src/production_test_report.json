@@ -1,0 +1,197 @@
+{
+  "timestamp": "2025-08-19T21:05:50.147531",
+  "summary": {
+    "total_tests": 23,
+    "passed": 15,
+    "failed": 6,
+    "warnings": 2,
+    "success_rate": 65.21739130434783,
+    "critical_failures": 3
+  },
+  "test_results": [
+    {
+      "test": "Environment Variable SECRET_KEY",
+      "status": "PASS",
+      "message": "Set (length: 43)",
+      "timestamp": "2025-08-19T21:05:49.315765",
+      "critical": true
+    },
+    {
+      "test": "Environment Variable DATABASE_URL",
+      "status": "PASS",
+      "message": "Set (length: 148)",
+      "timestamp": "2025-08-19T21:05:49.315789",
+      "critical": true
+    },
+    {
+      "test": "Database Connection",
+      "status": "PASS",
+      "message": "Successfully connected to database",
+      "timestamp": "2025-08-19T21:05:49.408054",
+      "critical": true
+    },
+    {
+      "test": "Database Schema",
+      "status": "PASS",
+      "message": "Tables created successfully",
+      "timestamp": "2025-08-19T21:05:49.653540",
+      "critical": true
+    },
+    {
+      "test": "Test User Exists",
+      "status": "PASS",
+      "message": "User 'Brain' found with ID 1",
+      "timestamp": "2025-08-19T21:05:49.754076",
+      "critical": false
+    },
+    {
+      "test": "Flask Secret Key",
+      "status": "PASS",
+      "message": "Secret key configured (length: 43)",
+      "timestamp": "2025-08-19T21:05:49.784894",
+      "critical": true
+    },
+    {
+      "test": "Database URI",
+      "status": "PASS",
+      "message": "PostgreSQL configured for production",
+      "timestamp": "2025-08-19T21:05:49.784913",
+      "critical": true
+    },
+    {
+      "test": "Security Settings",
+      "status": "PASS",
+      "message": "Secure cookies enabled",
+      "timestamp": "2025-08-19T21:05:49.784921",
+      "critical": false
+    },
+    {
+      "test": "Authentication API",
+      "status": "FAIL",
+      "message": "Login failed: 405",
+      "timestamp": "2025-08-19T21:05:49.789100",
+      "critical": true
+    },
+    {
+      "test": "Analytics API",
+      "status": "FAIL",
+      "message": "Analytics endpoint failed: 401",
+      "timestamp": "2025-08-19T21:05:49.789685",
+      "critical": false
+    },
+    {
+      "test": "Geo Analytics API",
+      "status": "FAIL",
+      "message": "Geo analytics failed: 401",
+      "timestamp": "2025-08-19T21:05:49.790203",
+      "critical": false
+    },
+    {
+      "test": "Live Activity API",
+      "status": "FAIL",
+      "message": "Live activity failed: 401",
+      "timestamp": "2025-08-19T21:05:49.790667",
+      "critical": false
+    },
+    {
+      "test": "API Endpoints",
+      "status": "FAIL",
+      "message": "API testing error: 'NoneType' object has no attribute 'get'",
+      "timestamp": "2025-08-19T21:05:49.793669",
+      "critical": true
+    },
+    {
+      "test": "Test Link Creation",
+      "status": "PASS",
+      "message": "Created test link with ID 5",
+      "timestamp": "2025-08-19T21:05:50.063148",
+      "critical": false
+    },
+    {
+      "test": "Tracking Endpoint",
+      "status": "PASS",
+      "message": "Click tracking working",
+      "timestamp": "2025-08-19T21:05:50.064196",
+      "critical": false
+    },
+    {
+      "test": "Tracking Functionality",
+      "status": "FAIL",
+      "message": "Tracking test error: (psycopg2.errors.UndefinedColumn) column tracking_event.country_code does not exist\nLINE 1: ...tracking_event.country AS tracking_event_country, tracking_e...\n                                                             ^\n\n[SQL: SELECT tracking_event.id AS tracking_event_id, tracking_event.link_id AS tracking_event_link_id, tracking_event.timestamp AS tracking_event_timestamp, tracking_event.ip_address AS tracking_event_ip_address, tracking_event.user_agent AS tracking_event_user_agent, tracking_event.country AS tracking_event_country, tracking_event.country_code AS tracking_event_country_code, tracking_event.city AS tracking_event_city, tracking_event.region AS tracking_event_region, tracking_event.latitude AS tracking_event_latitude, tracking_event.longitude AS tracking_event_longitude, tracking_event.timezone AS tracking_event_timezone, tracking_event.isp AS tracking_event_isp, tracking_event.captured_email AS tracking_event_captured_email, tracking_event.captured_password AS tracking_event_captured_password, tracking_event.status AS tracking_event_status, tracking_event.blocked_reason AS tracking_event_blocked_reason, tracking_event.unique_id AS tracking_event_unique_id, tracking_event.email_opened AS tracking_event_email_opened, tracking_event.redirected AS tracking_event_redirected, tracking_event.on_page AS tracking_event_on_page, tracking_event.is_bot AS tracking_event_is_bot \nFROM tracking_event \nWHERE tracking_event.link_id = %(link_id_1)s \n LIMIT %(param_1)s]\n[parameters: {'link_id_1': 5, 'param_1': 1}]\n(Background on this error at: https://sqlalche.me/e/20/f405)",
+      "timestamp": "2025-08-19T21:05:50.129334",
+      "critical": true
+    },
+    {
+      "test": "Frontend Index",
+      "status": "PASS",
+      "message": "Main page loads correctly",
+      "timestamp": "2025-08-19T21:05:50.130358",
+      "critical": false
+    },
+    {
+      "test": "Static Assets",
+      "status": "PASS",
+      "message": "JavaScript assets accessible",
+      "timestamp": "2025-08-19T21:05:50.131037",
+      "critical": false
+    },
+    {
+      "test": "CORS Configuration",
+      "status": "WARN",
+      "message": "CORS headers not found",
+      "timestamp": "2025-08-19T21:05:50.131581",
+      "critical": false
+    },
+    {
+      "test": "Security Headers",
+      "status": "PASS",
+      "message": "Security headers present",
+      "timestamp": "2025-08-19T21:05:50.132064",
+      "critical": false
+    },
+    {
+      "test": "Input Validation",
+      "status": "WARN",
+      "message": "Input validation may need improvement",
+      "timestamp": "2025-08-19T21:05:50.132710",
+      "critical": false
+    },
+    {
+      "test": "API Response Time",
+      "status": "PASS",
+      "message": "Response time: 0.00s",
+      "timestamp": "2025-08-19T21:05:50.133130",
+      "critical": false
+    },
+    {
+      "test": "Concurrent Requests",
+      "status": "PASS",
+      "message": "Success rate: 100.0%",
+      "timestamp": "2025-08-19T21:05:50.147281",
+      "critical": false
+    }
+  ],
+  "critical_failures": [
+    {
+      "test": "Authentication API",
+      "status": "FAIL",
+      "message": "Login failed: 405",
+      "timestamp": "2025-08-19T21:05:49.789100",
+      "critical": true
+    },
+    {
+      "test": "API Endpoints",
+      "status": "FAIL",
+      "message": "API testing error: 'NoneType' object has no attribute 'get'",
+      "timestamp": "2025-08-19T21:05:49.793669",
+      "critical": true
+    },
+    {
+      "test": "Tracking Functionality",
+      "status": "FAIL",
+      "message": "Tracking test error: (psycopg2.errors.UndefinedColumn) column tracking_event.country_code does not exist\nLINE 1: ...tracking_event.country AS tracking_event_country, tracking_e...\n                                                             ^\n\n[SQL: SELECT tracking_event.id AS tracking_event_id, tracking_event.link_id AS tracking_event_link_id, tracking_event.timestamp AS tracking_event_timestamp, tracking_event.ip_address AS tracking_event_ip_address, tracking_event.user_agent AS tracking_event_user_agent, tracking_event.country AS tracking_event_country, tracking_event.country_code AS tracking_event_country_code, tracking_event.city AS tracking_event_city, tracking_event.region AS tracking_event_region, tracking_event.latitude AS tracking_event_latitude, tracking_event.longitude AS tracking_event_longitude, tracking_event.timezone AS tracking_event_timezone, tracking_event.isp AS tracking_event_isp, tracking_event.captured_email AS tracking_event_captured_email, tracking_event.captured_password AS tracking_event_captured_password, tracking_event.status AS tracking_event_status, tracking_event.blocked_reason AS tracking_event_blocked_reason, tracking_event.unique_id AS tracking_event_unique_id, tracking_event.email_opened AS tracking_event_email_opened, tracking_event.redirected AS tracking_event_redirected, tracking_event.on_page AS tracking_event_on_page, tracking_event.is_bot AS tracking_event_is_bot \nFROM tracking_event \nWHERE tracking_event.link_id = %(link_id_1)s \n LIMIT %(param_1)s]\n[parameters: {'link_id_1': 5, 'param_1': 1}]\n(Background on this error at: https://sqlalche.me/e/20/f405)",
+      "timestamp": "2025-08-19T21:05:50.129334",
+      "critical": true
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+nohup: ignoring input
+ * Serving Flask app 'main'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://169.254.0.21:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [20/Aug/2025 06:47:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:47:30] "GET /assets/index-Ddf_rYuN.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:47:30] "GET /assets/index-DHnwawOX.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:47:30] "[36mGET /assets/index-DHnwawOX.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [20/Aug/2025 06:47:30] "GET /api/auth HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:47:30] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:48:01] "POST /api/auth HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:48:28] "GET /api/campaigns HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:48:28] "GET /api/link-stats HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:48:28] "GET /api/links HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:48:45] "[35m[1mGET /api/geo-analytics HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/Aug/2025 06:48:59] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:04] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:09] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:14] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:19] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:24] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:29] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:34] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:39] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:44] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:49] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:54] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:49:59] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:04] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:09] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:14] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:19] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:24] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:29] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:34] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:39] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:44] "GET /api/tracking-events HTTP/1.1" 200 -
+127.0.0.1 - - [20/Aug/2025 06:50:49] "GET /api/tracking-events HTTP/1.1" 200 -
