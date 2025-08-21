@@ -15,6 +15,7 @@ from src.routes.tracking import tracking_bp
 from src.routes.events import events_bp
 from src.routes.security import security_bp
 from src.routes.campaigns import campaigns_bp
+from src.routes.pixel import pixel_bp
 
 # Load environment variables
 load_dotenv()
@@ -37,12 +38,16 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(links_bp, url_prefix='/api/links')
 app.register_blueprint(analytics_bp, url_prefix='/api/analytics')
 app.register_blueprint(tracking_bp, url_prefix='/t')
+app.register_blueprint(pixel_bp, url_prefix='/p')
 app.register_blueprint(events_bp, url_prefix='/api/events')
 app.register_blueprint(security_bp, url_prefix='/api/security')
 app.register_blueprint(campaigns_bp, url_prefix='/api/campaigns')
 
 # Initialize database
 db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 
 

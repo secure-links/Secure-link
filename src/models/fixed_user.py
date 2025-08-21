@@ -131,6 +131,78 @@ class Link(db.Model):
         # Email tracking code (HTML img tag)
         self.email_code = f'<img src="{base_url}/p/{self.short_code}?uid={{email}}" width="1" height="1" style="display:none;">'
     
+    def set_allowed_countries(self, countries):
+        """Set allowed countries as JSON string"""
+        import json
+        if isinstance(countries, list):
+            self.allowed_countries = json.dumps(countries)
+        else:
+            self.allowed_countries = countries
+    
+    def get_allowed_countries(self):
+        """Get allowed countries as list"""
+        import json
+        if self.allowed_countries:
+            try:
+                return json.loads(self.allowed_countries)
+            except:
+                return []
+        return []
+    
+    def set_blocked_countries(self, countries):
+        """Set blocked countries as JSON string"""
+        import json
+        if isinstance(countries, list):
+            self.blocked_countries = json.dumps(countries)
+        else:
+            self.blocked_countries = countries
+    
+    def get_blocked_countries(self):
+        """Get blocked countries as list"""
+        import json
+        if self.blocked_countries:
+            try:
+                return json.loads(self.blocked_countries)
+            except:
+                return []
+        return []
+    
+    def set_allowed_cities(self, cities):
+        """Set allowed cities as JSON string"""
+        import json
+        if isinstance(cities, list):
+            self.allowed_cities = json.dumps(cities)
+        else:
+            self.allowed_cities = cities
+    
+    def get_allowed_cities(self):
+        """Get allowed cities as list"""
+        import json
+        if self.allowed_cities:
+            try:
+                return json.loads(self.allowed_cities)
+            except:
+                return []
+        return []
+    
+    def set_blocked_cities(self, cities):
+        """Set blocked cities as JSON string"""
+        import json
+        if isinstance(cities, list):
+            self.blocked_cities = json.dumps(cities)
+        else:
+            self.blocked_cities = cities
+    
+    def get_blocked_cities(self):
+        """Get blocked cities as list"""
+        import json
+        if self.blocked_cities:
+            try:
+                return json.loads(self.blocked_cities)
+            except:
+                return []
+        return []
+    
     def to_dict(self):
         return {
             'id': self.id,
@@ -168,6 +240,9 @@ class TrackingEvent(db.Model):
     referer = db.Column(db.Text, nullable=True)
     
     # Geographic data
+    country = db.Column(db.String(100), nullable=True)
+    country_code = db.Column(db.String(10), nullable=True)
+    city = db.Column(db.String(100), nullable=True)
     region = db.Column(db.String(100), nullable=True)
     zip_code = db.Column(db.String(20), nullable=True)
     isp = db.Column(db.String(255), nullable=True)

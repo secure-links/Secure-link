@@ -20,7 +20,7 @@ export function Login({ onLogin }) {
     setError('')
 
     try {
-      const response = await fetch('/api/auth', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export function Login({ onLogin }) {
 
       const data = await response.json()
 
-      if (data.success) {
+      if (response.ok) {
         onLogin(data.user)
       } else {
         setError(data.error || 'Login failed')

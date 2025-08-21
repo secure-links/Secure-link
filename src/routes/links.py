@@ -12,7 +12,7 @@ def get_links():
     try:
         user = request.current_user
         links = Link.query.filter_by(user_id=user.id).order_by(Link.created_at.desc()).all()
-        return jsonify([link.to_dict() for link in links])
+        return jsonify({"links": [link.to_dict() for link in links]})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -105,11 +105,16 @@ def update_link(link_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-@links_bp.route("/<int:link_id>", methods=["DELETE"])
+@links_bp.route("", methods=["DELETE"])
 @login_required
-def delete_link(link_id):
+def delete_link():
     """Delete a link"""
     try:
+        data = request.get_json()
+        if not data or 'id' not in data:
+            return jsonify({"error": "Link ID is required"}), 400
+        
+        link_id = data['id']
         link = Link.query.get_or_404(link_id)
         if link.user_id != request.current_user.id:
             return jsonify({"error": "Unauthorized"}), 403
