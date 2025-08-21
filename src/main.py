@@ -44,26 +44,7 @@ app.register_blueprint(campaigns_bp, url_prefix='/api/campaigns')
 # Initialize database
 db.init_app(app)
 
-def create_default_user():
-    """Create default user if none exists"""
-    try:
-        with app.app_context():
-            # Explicitly create tables in order to resolve foreign key dependencies
-            db.create_all(tables=[User.__table__, Campaign.__table__, Link.__table__, TrackingEvent.__table__, SecurityThreat.__table__])
-            
-            # Check if default user exists
-            if not User.query.filter_by(username='Brain').first():
-                user = User(username='Brain')
-                user.set_password('Mayflower1!!')
-                db.session.add(user)
-                db.session.commit()
-                print("Default user created: Brain/Mayflower1!!")
-    except Exception as e:
-        print(f"Database setup error: {e}")
-        print("Continuing without database...")
 
-# Create tables and default user
-# create_default_user()
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -96,8 +77,8 @@ def before_request():
     session.permanent = True
 
 if __name__ == '__main__':
-    with app.app_context():
-        create_default_user()
+
+
     app.run(host='0.0.0.0', port=5000, debug=True)
 
 
