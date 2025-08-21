@@ -1,106 +1,66 @@
 from flask import Blueprint, request, jsonify, session
-from src.models.user import db, User
-import re
+from datetime import datetime
+from src.models.fixed_user import db, User
 
 auth_bp = Blueprint('auth', __name__)
 
-def validate_email(email):
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    return re.match(pattern, email) is not None
-
-def sanitize_input(text):
-    if not text:
-        return ''
-    return text.strip()
-
-@auth_bp.route('/auth', methods=['GET', 'POST'])
-def auth():
-    if request.method == 'GET':
-        # Check if user is logged in
-        if 'user_id' in session:
-            user = User.query.get(session['user_id'])
-            if user:
-                return jsonify({
-                    'authenticated': True,
-                    'user': user.to_dict()
-                })
-        
-        return jsonify({'authenticated': False})
-    
-    elif request.method == 'POST':
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    """
+    Authenticate user and create session
+    """
+    try:
         data = request.get_json()
         if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
+            return jsonify({'error': 'No data provided'}), 400
         
-        action = data.get('action', '')
+        username = data.get('username')
+        password = data.get('password')
         
-        if action == 'login':
-            username = sanitize_input(data.get('username', ''))
-            password = data.get('password', '')
-            
-            if not username or not password:
-                return jsonify({'success': False, 'error': 'Username and password are required'}), 400
-            
-            # Find user by username or email
-            user = User.query.filter(
-                (User.username == username) | (User.email == username)
-            ).first()
-            
-            if user and user.check_password(password):
-                session['user_id'] = user.id
-                return jsonify({
-                    'success': True,
-                    'message': 'Login successful',
-                    'user': user.to_dict()
-                })
-            else:
-                return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
+        if not username or not password:
+            return jsonify({'error': 'Username and password required'}), 400
         
-        elif action == 'register':
-            username = sanitize_input(data.get('username', ''))
-            email = sanitize_input(data.get('email', ''))
-            password = data.get('password', '')
-            
-            if not username or not email or not password:
-                return jsonify({'success': False, 'error': 'All fields are required'}), 400
-            
-            if not validate_email(email):
-                return jsonify({'success': False, 'error': 'Invalid email format'}), 400
-            
-            if len(password) < 6:
-                return jsonify({'success': False, 'error': 'Password must be at least 6 characters long'}), 400
-            
-            # Check if user already exists
-            existing_user = User.query.filter(
-                (User.username == username) | (User.email == email)
-            ).first()
-            
-            if existing_user:
-                return jsonify({'success': False, 'error': 'Username or email already exists'}), 409
-            
-            # Create new user
-            try:
-                user = User(username=username, email=email)
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
-                
-                return jsonify({
-                    'success': True,
-                    'message': 'User created successfully',
-                    'user_id': user.id
-                })
-            except Exception as e:
-                db.session.rollback()
-                return jsonify({'success': False, 'error': 'Failed to create user'}), 500
+        # Find user
+        user = User.query.filter_by(username=username).first()
+        if not user or not user.check_password(password):
+            return jsonify({'error': 'Invalid credentials'}), 401
         
-        elif action == 'logout':
-            session.pop('user_id', None)
+        # Update last login
+        user.last_login = datetime.utcnow()
+        db.session.commit()
+        
+        # Create session
+        session['user_id'] = user.id
+        session['username'] = user.username
+        
+        return jsonify({
+            'message': 'Login successful',
+            'user': user.to_dict()
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@auth_bp.route('/logout', methods=['POST'])
+def logout():
+    """
+    Clear user session
+    """
+    session.clear()
+    return jsonify({'message': 'Logout successful'})
+
+@auth_bp.route('/check', methods=['GET'])
+def check_auth():
+    """
+    Check if user is authenticated
+    """
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user:
             return jsonify({
-                'success': True,
-                'message': 'Logout successful'
+                'authenticated': True,
+                'user': user.to_dict()
             })
-        
-        else:
-            return jsonify({'success': False, 'error': 'Invalid action'}), 400
+    
+    return jsonify({'authenticated': False})
 
