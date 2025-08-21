@@ -43,9 +43,7 @@ app.register_blueprint(campaigns_bp, url_prefix='/api/campaigns')
 
 # Initialize database
 db.init_app(app)
-
-def create_default_user():
-    """Create default user if none exists"""
+def create_default_user():    """Create default user if none exists"""
     try:
         with app.app_context():
             # Create tables
@@ -63,7 +61,7 @@ def create_default_user():
         print("Continuing without database...")
 
 # Create tables and default user
-create_default_user()
+# create_default_user()
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -95,5 +93,8 @@ def before_request():
     """Handle session management"""
     session.permanent = True
 
+
 if __name__ == '__main__':
+    with app.app_context():
+        create_default_user()
     app.run(host='0.0.0.0', port=5000, debug=True)
