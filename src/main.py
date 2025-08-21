@@ -1,13 +1,13 @@
 import os
 import sys
-# DON'T CHANGE THIS !!!
+# DON\'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory, session
 from flask_cors import CORS
 from dotenv import load_dotenv
 from datetime import datetime
-from src.models.fixed_user import db, User
+from src.models.fixed_user import db, User, Campaign, Link, TrackingEvent, SecurityThreat
 from src.routes.auth import auth_bp
 from src.routes.links import links_bp
 from src.routes.analytics import analytics_bp
@@ -43,11 +43,13 @@ app.register_blueprint(campaigns_bp, url_prefix='/api/campaigns')
 
 # Initialize database
 db.init_app(app)
-def create_default_user():    """Create default user if none exists"""
+
+def create_default_user():
+    """Create default user if none exists"""
     try:
         with app.app_context():
-            # Create tables
-            db.create_all()
+            # Explicitly create tables in order to resolve foreign key dependencies
+            db.create_all(tables=[User.__table__, Campaign.__table__, Link.__table__, TrackingEvent.__table__, SecurityThreat.__table__])
             
             # Check if default user exists
             if not User.query.filter_by(username='Brain').first():
@@ -93,8 +95,9 @@ def before_request():
     """Handle session management"""
     session.permanent = True
 
-
 if __name__ == '__main__':
     with app.app_context():
         create_default_user()
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+
