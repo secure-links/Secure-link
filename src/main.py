@@ -49,7 +49,7 @@ def create_default_user():
     try:
         with app.app_context():
             # Explicitly create tables in order to resolve foreign key dependencies
-            db.create_all(tables=[User.__table__, Campaign.__table__, Link.__table__, TrackingEvent.__table__, SecurityThreat.__table__])
+            db.create_all()
             
             # Check if default user exists
             if not User.query.filter_by(username='Brain').first():
